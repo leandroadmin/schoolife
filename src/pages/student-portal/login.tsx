@@ -97,7 +97,12 @@ export default function StudentLoginPage() {
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-black uppercase tracking-widest text-slate-400">Senha</Label>
+                                    <div className="flex items-center justify-between">
+                                        <Label className="text-xs font-black uppercase tracking-widest text-slate-400">Senha</Label>
+                                        <button type="button" onClick={() => toast.info("Por favor, solicite a redefinição de senha na secretaria da sua escola.", { description: "Seu acesso é gerenciado diretamente pela administração." })} className="text-[10px] font-bold text-blue-500 hover:text-blue-600 transition-colors uppercase tracking-widest">
+                                            Esqueci a senha
+                                        </button>
+                                    </div>
                                     <div className="relative">
                                         <input
                                             name="password"

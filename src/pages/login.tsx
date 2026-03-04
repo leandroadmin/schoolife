@@ -48,6 +48,35 @@ export default function LoginPage() {
         }
     }
 
+    const handleResetPassword = async () => {
+        const emailInput = (document.getElementById('email') as HTMLInputElement)?.value;
+        if (!emailInput) {
+            toast.error("Preencha seu e-mail", {
+                description: "Digite seu e-mail no campo acima para recuperar a senha."
+            })
+            return
+        }
+
+        try {
+            setLoading(true)
+            const { error } = await supabase.auth.resetPasswordForEmail(emailInput, {
+                redirectTo: `${window.location.origin}/update-password`,
+            })
+            if (error) {
+                console.error("Supabase Reset Error:", error)
+                throw error
+            }
+            toast.success("E-mail enviado!", {
+                description: "Verifique sua caixa de entrada (e pasta de spam) para redefinir sua senha."
+            })
+        } catch (error: any) {
+            console.error('Reset error:', error)
+            toast.error("Erro ao tentar recuperar a senha.")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden">
             {/* Left Side: Branding / Background */}
@@ -106,7 +135,7 @@ export default function LoginPage() {
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
                                     <Label htmlFor="password" className="text-xs font-bold uppercase tracking-widest text-slate-400">Chave de Acesso</Label>
-                                    <button type="button" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 transition-colors uppercase tracking-widest">
+                                    <button type="button" onClick={handleResetPassword} disabled={loading} className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 transition-colors uppercase tracking-widest disabled:opacity-50">
                                         Esqueci a chave
                                     </button>
                                 </div>
