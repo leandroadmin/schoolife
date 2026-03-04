@@ -47,7 +47,6 @@ type School = {
 
 export default function SaasSchoolsPage() {
     const [schools, setSchools] = useState<School[]>([])
-    const [loading, setLoading] = useState(true)
     const [isFormOpen, setIsFormOpen] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -73,7 +72,6 @@ export default function SaasSchoolsPage() {
 
     async function fetchSchools() {
         try {
-            setLoading(true)
             // By RLS logic, a `super_admin` can view `public.schools`
             const { data, error } = await supabase
                 .from('schools')
@@ -85,8 +83,6 @@ export default function SaasSchoolsPage() {
         } catch (error: any) {
             console.error('Error fetching schools:', error)
             toast.error("Erro ao carregar lista de escolas.")
-        } finally {
-            setLoading(false)
         }
     }
 
@@ -165,6 +161,10 @@ export default function SaasSchoolsPage() {
                 .eq('school_id', school.id)
                 .eq('role', 'admin')
                 .single()
+
+            if (error) {
+                console.error("Erro ao buscar dados do diretor:", error);
+            }
 
             if (data) {
                 setAdminDetails({

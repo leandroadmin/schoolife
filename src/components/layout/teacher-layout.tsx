@@ -156,6 +156,11 @@ export function TeacherLayout() {
                             Sair do Portal
                         </span>
                     </Button>
+                    <div className={cn("mt-4 text-center transition-all duration-300", !isSidebarOpen && "md:hidden")}>
+                        <p className="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-widest font-mono">
+                            v{__APP_VERSION__}
+                        </p>
+                    </div>
                 </div>
             </aside>
 
