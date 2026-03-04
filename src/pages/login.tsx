@@ -98,8 +98,7 @@ export default function LoginPage() {
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="admin@escola.com"
-                                    defaultValue="admin@escola.com"
+                                    placeholder="seu@email.com"
                                     className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-none px-6 text-base font-medium shadow-inner"
                                     required
                                 />
@@ -114,7 +113,6 @@ export default function LoginPage() {
                                 <Input
                                     id="password"
                                     type="password"
-                                    defaultValue="admin123"
                                     className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border-none px-6 text-base font-medium shadow-inner"
                                     required
                                 />
@@ -136,11 +134,6 @@ export default function LoginPage() {
                                 <GraduationCap className="w-4 h-4 mr-2" />
                                 <span className="text-xs">Aluno</span>
                             </Button>
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-2">Ambiente de Demonstração</p>
-                            <p className="text-xs font-bold text-slate-500 mb-1">Escola (Tenant): <span className="text-emerald-500">admin@escola.com</span></p>
-                            <p className="text-xs font-bold text-slate-500">Super Admin (SaaS): <span className="text-indigo-500">super@admin.com</span></p>
                         </div>
                     </div>
                 </div>

@@ -4,66 +4,60 @@ import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users2, Loader2, ArrowRight } from "lucide-react"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
-import type { Teacher } from "@/types"
 
 export default function TeacherLoginPage() {
-    const [teachers, setTeachers] = useState<Teacher[]>([])
-    const [selectedTeacher, setSelectedTeacher] = useState<string>("")
     const [loading, setLoading] = useState(false)
-    const [fetching, setFetching] = useState(true)
+
     const navigate = useNavigate()
 
     useEffect(() => {
-        fetchTeachers()
         // If already logged in, redirect
         if (localStorage.getItem('teacher_id')) {
             navigate('/teacher/dashboard')
         }
     }, [navigate])
-
-    async function fetchTeachers() {
-        try {
-            setFetching(true)
-            const { data, error } = await supabase
-                .from('teachers')
-                .select('id, full_name, email')
-                .eq('status', 'active')
-                .order('full_name')
-
-            if (error) throw error
-            setTeachers(data as Teacher[] || [])
-        } catch (error) {
-            console.error('Error fetching teachers:', error)
-            toast.error("Erro ao carregar lista de professores")
-        } finally {
-            setFetching(false)
-        }
-    }
-
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!selectedTeacher) {
-            toast.error("Por favor, selecione um professor para prosseguir.")
+        const form = e.target as HTMLFormElement
+        const username = (form.elements.namedItem('username') as HTMLInputElement).value
+        const password = (form.elements.namedItem('password') as HTMLInputElement).value
+
+        if (!username || !password) {
+            toast.error("Por favor, preencha o usuário e a senha.")
             return
         }
 
         setLoading(true)
-        setTimeout(() => {
-            localStorage.setItem('teacher_id', selectedTeacher)
-            // also ensure student login is cleared if testing
+
+        try {
+            const { data, error } = await supabase
+                .from('teachers')
+                .select('id, password')
+                .eq('username', username)
+                .single()
+
+            if (error || !data) {
+                toast.error("Professor não encontrado.")
+                setLoading(false)
+                return
+            }
+
+            if (data.password !== password) {
+                toast.error("Senha incorreta.")
+                setLoading(false)
+                return
+            }
+
+            localStorage.setItem('teacher_id', data.id)
             localStorage.removeItem('student_id')
-            setLoading(false)
             navigate("/teacher/dashboard")
-        }, 800)
+        } catch (err) {
+            toast.error("Erro ao validar credenciais.")
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -79,53 +73,57 @@ export default function TeacherLoginPage() {
 
                 <Card className="border-none shadow-2xl rounded-3xl overflow-hidden bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl">
                     <CardHeader className="bg-slate-100/50 dark:bg-slate-800/50 pb-6 border-b border-slate-200/50 dark:border-slate-700/50">
-                        <CardTitle className="text-lg">Simulação de Acesso</CardTitle>
+                        <CardTitle className="text-lg">Acesso Docente</CardTitle>
                         <CardDescription>
-                            Escolha um professor para entrar no perfil. Opcional para fins de testes rápidos do painel.
+                            Entre com seu usuário e senha institucionais.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="pt-8 pb-8 px-8">
                         <form onSubmit={handleLogin} className="space-y-6">
-                            <div className="space-y-3">
-                                <Label className="text-xs font-black uppercase tracking-widest text-slate-400">Selecionar Professor</Label>
-                                {fetching ? (
-                                    <div className="h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                                        <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label className="text-xs font-black uppercase tracking-widest text-slate-400">Usuário</Label>
+                                    <div className="relative">
+                                        <Users2 className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+                                        <input
+                                            name="username"
+                                            required
+                                            placeholder="Ex: marcos.santos"
+                                            className="w-full h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border-none pl-10 pr-4 text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+                                        />
                                     </div>
-                                ) : (
-                                    <Select value={selectedTeacher} onValueChange={setSelectedTeacher}>
-                                        <SelectTrigger className="h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 border-none px-4 text-base font-medium">
-                                            <SelectValue placeholder="Escolha um professor..." />
-                                        </SelectTrigger>
-                                        <SelectContent className="rounded-2xl border-slate-200 dark:border-slate-800 max-h-[300px]">
-                                            {teachers.map((teacher: any) => (
-                                                <SelectItem key={teacher.id} value={teacher.id} className="rounded-xl py-3">
-                                                    <span className="font-bold text-slate-700 dark:text-slate-200">{teacher.full_name}</span>
-                                                    {teacher.email && <span className="text-xs text-slate-400 ml-2">({teacher.email})</span>}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                )}
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-xs font-black uppercase tracking-widest text-slate-400">Senha</Label>
+                                    <div className="relative">
+                                        <input
+                                            name="password"
+                                            type="password"
+                                            required
+                                            placeholder="••••••••"
+                                            className="w-full h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border-none px-4 text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
                             <Button
                                 type="submit"
-                                disabled={loading || !selectedTeacher || fetching}
+                                disabled={loading}
                                 className="w-full h-14 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl font-bold shadow-lg shadow-amber-200 dark:shadow-none transition-all"
                             >
                                 {loading ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />
                                 ) : (
                                     <>
-                                        Acessar Meu Painel <ArrowRight className="w-5 h-5 ml-2" />
+                                        Entrar no Painel <ArrowRight className="w-5 h-5 ml-2" />
                                     </>
                                 )}
                             </Button>
 
-                            <div className="text-center pt-4">
+                            <div className="text-center pt-4 border-t border-slate-100 dark:border-slate-800">
                                 <Button variant="link" onClick={() => navigate('/login')} className="text-slate-400 font-medium">
-                                    Voltar para acesso Administrativo
+                                    Acesso Administrativo
                                 </Button>
                             </div>
                         </form>
