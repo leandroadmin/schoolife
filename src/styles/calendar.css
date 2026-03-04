@@ -1,0 +1,104 @@
+/* Custom styles for react-big-calendar to match our SaaS theme */
+
+.custom-calendar .rbc-toolbar {
+    margin-bottom: 20px;
+}
+
+.custom-calendar .rbc-toolbar button {
+    border-radius: 8px;
+    padding: 6px 14px;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.dark .custom-calendar .rbc-toolbar button {
+    border-color: #1e293b;
+    color: #94a3b8;
+}
+
+.custom-calendar .rbc-toolbar button:hover {
+    background-color: #f8fafc;
+}
+
+.dark .custom-calendar .rbc-toolbar button:hover {
+    background-color: #1e293b;
+}
+
+.custom-calendar .rbc-toolbar button.rbc-active {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px -1px rgb(59 130 246 / 0.5);
+}
+
+.custom-calendar .rbc-header {
+    padding: 10px 0;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #64748b;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.dark .custom-calendar .rbc-header {
+    color: #94a3b8;
+    border-bottom-color: #1e293b;
+}
+
+.custom-calendar .rbc-month-view,
+.custom-calendar .rbc-time-view,
+.custom-calendar .rbc-agenda-view {
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.dark .custom-calendar .rbc-month-view,
+.dark .custom-calendar .rbc-time-view,
+.dark .custom-calendar .rbc-agenda-view {
+    border-color: #0f172a;
+}
+
+.custom-calendar .rbc-day-bg {
+    transition: background-color 0.2s;
+}
+
+.custom-calendar .rbc-day-bg:hover {
+    background-color: #f8fafc;
+}
+
+.dark .custom-calendar .rbc-day-bg:hover {
+    background-color: #0f172a;
+}
+
+.custom-calendar .rbc-today {
+    background-color: #eff6ff !important;
+}
+
+.dark .custom-calendar .rbc-today {
+    background-color: rgba(59, 130, 246, 0.05) !important;
+}
+
+.custom-calendar .rbc-off-range-bg {
+    background-color: #f8fafc;
+}
+
+.dark .custom-calendar .rbc-off-range-bg {
+    background-color: #020617;
+}
+
+.custom-calendar .rbc-month-row,
+.custom-calendar .rbc-month-row+.rbc-month-row,
+.custom-calendar .rbc-day-bg+.rbc-day-bg,
+.custom-calendar .rbc-time-header-content {
+    border-color: #f1f5f9;
+}
+
+.dark .custom-calendar .rbc-month-row,
+.dark .custom-calendar .rbc-month-row+.rbc-month-row,
+.dark .custom-calendar .rbc-day-bg+.rbc-day-bg,
+.dark .custom-calendar .rbc-time-header-content {
+    border-color: #0f172a;
+}
